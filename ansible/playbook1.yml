@@ -1,0 +1,78 @@
+
+---
+
+- hosts: tag_Name_server_1, tag_Name_server_2    #tag value of application server should go here for dynamic inventory lookup
+  sudo: yes
+  gather_facts: no
+  remote_user: ubuntu
+
+  tasks:
+    - name: update cache
+      apt: update_cache=true
+
+    - name: install apache
+      apt: name=apache2 update_cache=yes state=latest
+
+    - name: install sudo
+      apt: name=sudo state=present
+
+    - name: Install PHP
+      apt:
+        name: ["php","php-mysql","libapache2-mod-php","php7.2-cli","php7.2-curl","php7.2-gd","php7.2-mbstring","php7.2-mysql","php7.2-xml"]
+        state: latest
+
+    - name: Install MySQL
+      apt: name=mysql-client state=present
+
+    - name: editing apache2.conf
+      replace:
+        path: /etc/apache2/apache2.conf
+        regexp: '^<Directory /var/www/>'
+        replace: '<Directory /var/www/html/public>'
+        backup: yes
+
+    - name: edit 000-default.conf
+      replace:
+        path: /etc/apache2/sites-available/000-default.conf
+        regexp: '^\sDocumentRoot /var/www/html'
+        replace: 'DocumentRoot /var/www/html/public'
+
+    - git:
+        repo: https://github.com/dustinredmon/NovaProspekt-Project1
+        dest: /home/ubuntu/repo1/
+
+    - name: copy html from repo to /var/www/html/public
+      file:
+        src: /home/ubuntu/repo1/html
+        dest: /var/www/html/public
+#        owner: www-data
+#        group: www-data
+        state: link
+    
+    - name: http to https redirect
+      blockinfile:
+        path: /etc/apache2/sites-available/000-default.conf
+        insertbefore: "</VirtualHost>"
+        block: |
+          #HTTP to HTTPS redirect
+          RewriteEngine On
+          RewriteCond %{HTTP:X-Forwarded-Proto} =http
+          RewriteRule .* https://%{HTTP:Host}%{REQUEST_URI} [L,R=permanent]
+          
+    - name: restart apache
+      service: name=apache2 state=restarted
+
+    - set_fact:
+         ansible_connection=ssh
+         ansible_ssh_user=ubuntu
+
+    - ping:
+
+  handlers:
+    - name: restart ssh
+      service:
+        name: "sshd"
+        state: restarted
+
+
+

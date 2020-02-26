@@ -24,7 +24,7 @@ resource "aws_subnet" "rds-2-private" {
 
 resource "aws_db_subnet_group" "rds-private-subnet" {
   name = "rds-private-subnet-group"
-  subnet_ids = ["${aws_subnet.rds-1-private.id}","${aws_subnet.rds-1-private.id}"]
+  subnet_ids = ["${aws_subnet.rds-1-private.id}","${aws_subnet.rds-2-private.id}"]
 }
 
 resource "aws_security_group" "rds-sg" {
@@ -56,7 +56,7 @@ resource "aws_db_instance" "nova-db" {
   engine                      = "mysql"
   engine_version              = "5.7"
   instance_class              = "db.t2.micro"
-  name                        = "nova-db"
+  name                        = "novadb"
   username                    = "admin"
   password                    = "${data.aws_kms_secrets.rds-secret.plaintext["master-password"]}"
   parameter_group_name        = "default.mysql5.7"

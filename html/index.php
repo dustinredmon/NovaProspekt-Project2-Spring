@@ -82,8 +82,13 @@
 
 	      <p>You have logged in <?php echo $login_count ?> times.<p>
 	      <p>Your last login was on <?php echo $_SESSION['last_login'] ?>.<p>
-	      <p><a href="/secret/secret.txt" download>Download secret here</a></p>
-
+	      <!--<p><a href="/secret/secret.txt" download>Download secret here</a></p> -->
+	      
+	      <form action="includes/file-upload.php" method="post" enctype="multipart/form-data">
+    		Select file to upload:
+    	      <input type="file" name="fileToUpload" id="fileToUpload">
+  	      <input type="submit" value="Upload File" name="submit">
+	      </form>
 
               <!--CONTENT FOR LOGGED IN USERS GO HERE-->
               <!--CONTENT FOR LOGGED IN USERS GO HERE-->

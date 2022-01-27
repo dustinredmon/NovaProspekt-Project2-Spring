@@ -2,7 +2,7 @@
 # CIT480 - Group Project 1                                                                       #
 # Team Name: NovaProspekt                                                                        #
 # Team Members: Vlad Shtyrts, Dustin Redmon, Viktar Mizeryia                                     #
-# Description: Web server infrastructure setup using terraform and ansible for weather app       #
+# Description: Web server infrastructure setup using terraform and ansible for login app         #
 # https://novaprospekt.xyz/                                                                      #
 ##################################################################################################
 # 1. Features
